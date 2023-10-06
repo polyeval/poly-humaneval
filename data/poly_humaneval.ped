@@ -1375,7 +1375,7 @@ problem HumanEval/90 {
             ([]) -> null
             ([1, 1]) -> null
             ([1,1,1,1,0]) -> 1
-            ([1, 0]) -> null
+            ([1, 0]) -> 1
             ([-35, 34, 12, -45]) -> -35
         }
     }
@@ -2212,7 +2212,7 @@ problem HumanEval/139 {
         template nse {
             (4) -> 288
             (5) -> 34560
-            (7) -> 24883200
+            (6) -> 24883200
             (1) -> 1
         }
     }
@@ -2577,7 +2577,7 @@ problem HumanEval/159 {
 }
 problem HumanEval/160 {
     code {
-        func do_algebra(ops:list<string>, operands:list<int>) -> int
+        func do_algebra(operators:list<string>, operands:list<int>) -> int
     }
     tests {
         template nse {

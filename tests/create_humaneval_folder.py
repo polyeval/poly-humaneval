@@ -1,7 +1,7 @@
 import json
 import os
 
-with open("../humanevalpack.jsonl", "r", encoding="utf-8") as f:
+with open("../data/humanevalpack.jsonl", "r", encoding="utf-8") as f:
     lines = f.readlines()
     json_objects = [json.loads(line) for line in lines]
 

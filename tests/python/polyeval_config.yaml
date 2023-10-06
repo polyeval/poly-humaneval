@@ -1,0 +1,7 @@
+sources:
+  main: src/main.py
+  target: src/target.py
+
+commands:
+  run: python src/main.py
+
