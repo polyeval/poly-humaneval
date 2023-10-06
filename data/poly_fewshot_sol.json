@@ -1,0 +1,34 @@
+{
+  "Example_0": {
+    "cpp": "vector<string> reverseList(const vector<string>& strs) {\n    vector<string> reversedList(strs.rbegin(), strs.rend());\n    return reversedList;\n}",
+    "csharp": "class Global {\n    public static IList<string> ReverseList(IList<string> strs) {\n        List<string> reversedList = new List<string>(strs);\n        reversedList.Reverse();\n        return reversedList;\n    }\n}",
+    "dart": "List<String> reverseList(List<String> strs) {\n    List<String> reversedList = List.from(strs.reversed);\n    return reversedList;\n}",
+    "go": "func ReverseList(strs []string) []string {\n    reversedList := make([]string, len(strs))\n    for i := 0; i < len(strs); i++ {\n        reversedList[i] = strs[len(strs)-1-i]\n    }\n    return reversedList\n}",
+    "java": "class Global {\n    public static List<String> reverseList(List<String> strs) {\n        List<String> reversedList = new ArrayList<>(strs);\n        Collections.reverse(reversedList);\n        return reversedList;\n    }\n}",
+    "javascript": "const reverseList = (strs) => {\n    const reversedList = [...strs].reverse();\n    return reversedList;\n}\nexport {reverseList};",
+    "kotlin": "fun reverseList(strs: List<String>): List<String> {\n    val reversedList = strs.reversed()\n    return reversedList\n}",
+    "php": "function reverseList($strs) {\n    $reversedList = array_reverse($strs);\n    return $reversedList;\n}",
+    "python": "def reverse_list(strs: List[str]) -> List[str]:\n    reversed_list = list(reversed(strs))\n    return reversed_list",
+    "ruby": "def reverse_list(strs)\n    reversed_list = strs.reverse\n    return reversed_list\nend",
+    "rust": "pub fn reverse_list(strs: &Vec<String>) -> Vec<String> {\n    let mut reversed_list: Vec<String> = strs.iter().cloned().rev().collect();\n    reversed_list\n}",
+    "scala": "object Global {\n    def reverseList(strs: List[String]): List[String] = {\n        strs.reverse\n    }\n}",
+    "swift": "func reverseList(_ strs: [String]) -> [String] {\n    let reversedList = Array(strs.reversed())\n    return reversedList\n}",
+    "typescript": "const reverseList = (strs: Array<string>): Array<string>  => {\n    const reversedList: Array<string> = [...strs].reverse();\n    return reversedList;\n}\nexport {reverseList};"
+  },
+  "Example_1": {
+    "cpp": "bool check(int number) {\n    return number % 2 != 0;\n}\n\nvector<int> filterOdd(const vector<int>& numbers) {\n    vector<int> oddNumbers;    \n    for (int num : numbers) {\n        if (check(num)) {\n            oddNumbers.push_back(num);\n        }\n    }   \n    return oddNumbers;\n}",
+    "csharp": "class Global {\n    static bool Check(int number) {\n        return number % 2 != 0;\n    }\n\n    public static IList<int> FilterOdd(IList<int> numbers) {\n        List<int> oddNumbers = new List<int>();\n        foreach (int num in numbers) {\n            if (Check(num)) {\n                oddNumbers.Add(num);\n            }\n        }\n        return oddNumbers;\n    }\n}",
+    "dart": "bool check(int number) {\n    return number % 2 != 0;\n}\n\nList<int> filterOdd(List<int> numbers) {\n    List<int> oddNumbers = [];\n    for (int num in numbers) {\n        if (check(num)) {\n            oddNumbers.add(num);\n        }\n    }\n    return oddNumbers;\n}",
+    "go": "func check(number int) bool {\n    return number % 2 != 0\n}\n\nfunc FilterOdd(numbers []int) []int {\n    var oddNumbers []int\n    for _, num := range numbers {\n        if check(num) {\n            oddNumbers = append(oddNumbers, num)\n        }\n    }\n    return oddNumbers\n}",
+    "java": "class Global {\n    public static boolean check(int number) {\n        return number % 2 != 0;\n    }\n\n    public static List<Integer> filterOdd(List<Integer> numbers) {\n        List<Integer> oddNumbers = new ArrayList<>();\n        for (int num : numbers) {\n            if (check(num)) {\n                oddNumbers.add(num);\n            }\n        }\n        return oddNumbers;\n    }\n}",
+    "javascript": "const check = (number) => {\n    return number % 2 !== 0;\n}\n\nconst filterOdd = (numbers) => {\n    const oddNumbers = [];\n    for (let num of numbers) {\n        if (check(num)) {\n            oddNumbers.push(num);\n        }\n    }\n    return oddNumbers;\n}\n\nexport { filterOdd };",
+    "kotlin": "fun check(number: Int): Boolean {\n    return number % 2 != 0\n}\n\nfun filterOdd(numbers: List<Int>): List<Int> {\n    val oddNumbers = mutableListOf<Int>()\n    for (num in numbers) {\n        if (check(num)) {\n            oddNumbers.add(num)\n        }\n    }\n    return oddNumbers\n}",
+    "php": "function check($number) {\n    return $number % 2 != 0;\n}\n\nfunction filterOdd($numbers) {\n    $oddNumbers = array();\n    foreach ($numbers as $num) {\n        if (check($num)) {\n            $oddNumbers[] = $num;\n        }\n    }\n    return $oddNumbers;\n}",
+    "python": "def check(number: int) -> bool:\n    return number % 2 != 0\n\ndef filter_odd(numbers: List[int]) -> List[int]:\n    odd_numbers = []\n    for num in numbers:\n        if check(num):\n            odd_numbers.append(num)\n    return odd_numbers",
+    "ruby": "def check(number)\n    number % 2 != 0\nend\n\ndef filter_odd(numbers)\n    odd_numbers = []\n    numbers.each do |num|\n        if check(num)\n            odd_numbers.push(num)\n        end\n    end\n    odd_numbers\nend",
+    "rust": "fn check(number: i32) -> bool {\n    number % 2 != 0\n}\n\npub fn filter_odd(numbers: &Vec<i32>) -> Vec<i32> {\n    let mut odd_numbers = Vec::new();\n    for &num in numbers {\n        if check(num) {\n            odd_numbers.push(num);\n        }\n    }\n    odd_numbers\n}",
+    "scala": "object Global {\n    def check(number: Int): Boolean = {\n        number % 2 != 0\n    }\n\n    def filterOdd(numbers: List[Int]): List[Int] = {\n        var oddNumbers = mutable.ListBuffer[Int]()\n        for (num <- numbers) {\n            if (check(num)) {\n                oddNumbers += num\n            }\n        }\n        oddNumbers.toList\n    }\n}",
+    "swift": "func check(_ number: Int) -> Bool {\n    return number % 2 != 0\n}\n\nfunc filterOdd(_ numbers: [Int]) -> [Int] {\n    var oddNumbers = [Int]()\n    for num in numbers {\n        if check(num) {\n            oddNumbers.append(num)\n        }\n    }\n    return oddNumbers\n}",
+    "typescript": "const check = (number: number): boolean => {\n    return number % 2 !== 0;\n}\n\nconst filterOdd = (numbers: Array<number>): Array<number> => {\n    const oddNumbers: Array<number> = [];\n    for (const num of numbers) {\n        if (check(num)) {\n            oddNumbers.push(num);\n        }\n    }\n    return oddNumbers;\n}\nexport { filterOdd };"
+  }
+}
