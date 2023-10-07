@@ -29,10 +29,13 @@ with open("../data/poly_humaneval.ped", "r") as f:
 problems = parse(desc_str)
 print(len(problems.data))
 
-with open("../data/polyhumaneval_sol_py.json", "r") as f:
+with open("../data/poly_humaneval_sol_py.json", "r") as f:
     solutions = json.load(f)
 
-prompts = {}
+with open("../data/poly_fewshot_prompts.json", "r") as f:
+    fewshot_prompts = json.load(f)
+
+prompts = []
 
 for p_name, p in problems.data.items():
     py_solution = solutions[p_name]
@@ -51,10 +54,22 @@ Following the format:
 ```{lang}
 {code_prompt}
 ```"""
-        prompts[prompt_id] = prompt
+        # messages = fewshot_prompts["python"][lang]["messages"]
+        old_messages = fewshot_prompts["python"][lang]["messages"]
+        assert len(old_messages) == 5
+        messages = [item for item in old_messages]
+        messages.append({
+            "role": "user",
+            "content": prompt
+        })
+        prompt_obj = {
+            "task_id": prompt_id,
+            "messages": messages
+        }
+        prompts.append(prompt_obj)
 
-        if p_name == "HumanEval/0":
-            print(prompt)
+prompts = sorted(prompts, key=lambda x: x["task_id"])
+print(len(prompts))
 
-with open("../data/polyhumaneval_prompts.json", "w") as f:
+with open("../data/poly_humaneval_prompts.json", "w") as f:
     json.dump(prompts, f, indent=4)

@@ -44,5 +44,5 @@ for problem_name, problem in problems.data.items():
         results[problem_name] = target_code
         proj.delete_folder()
 
-with open("../data/polyhumaneval_sol_py.json", "w") as f:
+with open("../data/poly_humaneval_sol_py.json", "w") as f:
     json.dump(results, f, indent=4)
