@@ -1,0 +1,9 @@
+sources:
+  main: src/Main.cs
+  target: src/Target.cs
+
+commands:
+  install: dotnet restore
+  build: dotnet build
+  run: dotnet run
+

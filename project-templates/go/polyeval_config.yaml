@@ -1,0 +1,9 @@
+sources:
+  main: src/main.go
+  target: src/target.go
+
+commands:
+  install: go mod tidy
+  build: go build ./src
+  run: go run ./src
+

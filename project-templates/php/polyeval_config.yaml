@@ -1,0 +1,8 @@
+sources:
+  main: src/main.php
+  target: src/target.php
+
+commands:
+  install: composer install
+  build: php -l src/main.php src/target.php
+  run: php src/main.php

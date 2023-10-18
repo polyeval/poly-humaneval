@@ -1,0 +1,8 @@
+sources:
+  main: src/main.rb
+  target: src/target.rb
+
+commands:
+  install: bundle.bat install
+  build: ruby -c src/main.rb src/target.rb
+  run: bundle.bat exec ruby src/main.rb

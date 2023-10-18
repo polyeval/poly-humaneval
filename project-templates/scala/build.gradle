@@ -1,0 +1,31 @@
+plugins {
+    id 'scala'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.scala-lang:scala3-library_3:3.3.1'
+}
+
+sourceSets {
+    main {
+        scala {
+            srcDirs 'src'
+        }
+    }
+
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    mainClass = 'main.main'
+}

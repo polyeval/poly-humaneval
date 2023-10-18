@@ -1,0 +1,9 @@
+sources:
+  main: src/Main.java
+  target: src/Target.java
+
+commands:
+  install: gradle dependencies
+  build: gradle build
+  run: gradle run
+

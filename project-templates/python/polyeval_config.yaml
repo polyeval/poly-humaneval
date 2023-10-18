@@ -1,0 +1,9 @@
+sources:
+  main: src/main.py
+  target: src/target.py
+
+commands:
+  install: pip3 install -r requirements.txt
+  build: python3 -m py_compile src/main.py src/target.py
+  run: python3 src/main.py
+

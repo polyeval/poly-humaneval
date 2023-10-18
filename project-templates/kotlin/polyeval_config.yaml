@@ -1,0 +1,9 @@
+sources:
+  main: src/Main.kt
+  target: src/Target.kt
+
+commands:
+  install: gradle dependencies
+  build: gradle build
+  run: gradle run
+
