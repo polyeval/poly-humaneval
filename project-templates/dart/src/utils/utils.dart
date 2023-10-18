@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:collection';
 import 'dart:math';
 
-String _escapeString(String s) {
+String escapeString(String s) {
     StringBuffer newS = new StringBuffer();
     for (int i = 0; i < s.length; i++) {
         String c = s[i];
@@ -31,13 +31,13 @@ String _escapeString(String s) {
     return newS.toString();
 }
 
-class _PolyEvalType {
+class PolyEvalType {
     String typeStr = "";
     String typeName = "";
-    _PolyEvalType? valueType;
-    _PolyEvalType? keyType;
+    PolyEvalType? valueType;
+    PolyEvalType? keyType;
 
-    _PolyEvalType(String typeStr) {
+    PolyEvalType(String typeStr) {
         this.typeStr = typeStr;
         if (!typeStr.contains("<")) {
             this.typeName = typeStr;
@@ -46,32 +46,32 @@ class _PolyEvalType {
             this.typeName = typeStr.substring(0, idx);
             String otherStr = typeStr.substring(idx + 1, typeStr.length - 1);
             if (!otherStr.contains(",")) {
-                this.valueType = new _PolyEvalType(otherStr);
+                this.valueType = new PolyEvalType(otherStr);
             } else {
                 int idx = otherStr.indexOf(",");
-                this.keyType = new _PolyEvalType(otherStr.substring(0, idx));
-                this.valueType = new _PolyEvalType(otherStr.substring(idx + 1));
+                this.keyType = new PolyEvalType(otherStr.substring(0, idx));
+                this.valueType = new PolyEvalType(otherStr.substring(idx + 1));
             }
         }
     }
 }
 
-String _genVoid(Object? value) {
+String genVoid(Object? value) {
     assert(value == null);
     return "null";
 }
 
-String _genInt(Object? value) {
+String genInt(Object? value) {
     assert(value is int);
     return value.toString();
 }
 
-String _genLong(Object? value) {
+String genLong(Object? value) {
     assert(value is int);
     return value.toString() + "L";
 }
 
-String _genDouble(Object? value) {
+String genDouble(Object? value) {
     assert(value is double);
     double f = value as double;
     if (f.isNaN) {
@@ -96,76 +96,76 @@ String _genDouble(Object? value) {
     return valueStr;
 }
 
-String _genBool(Object? value) {
+String genBool(Object? value) {
     assert(value is bool);
     return (value as bool) ? "true" : "false";
 }
 
-String _genChar(Object? value) {
+String genChar(Object? value) {
     assert(value is String);
-    return "'" + _escapeString((value as String)) + "'";
+    return "'" + escapeString((value as String)) + "'";
 }
 
-String _genString(Object? value) {
+String genString(Object? value) {
     assert(value is String);
-    return "\"" + _escapeString(value as String) + "\"";
+    return "\"" + escapeString(value as String) + "\"";
 }
 
-String _genAny(Object? value) {
+String genAny(Object? value) {
     if (value is bool) {
-        return _genBool(value);
+        return genBool(value);
     } else if (value is int) {
-        return _genInt(value);
+        return genInt(value);
     } else if (value is double) {
-        return _genDouble(value);
+        return genDouble(value);
     } else if (value is String) {
-        return _genString(value);
+        return genString(value);
     }
     assert(false);
     return "";
 }
 
-String _genList(Object? value, _PolyEvalType t) {
+String genList(Object? value, PolyEvalType t) {
     assert(value is List);
     List list = value as List;
     List<String> vStrs = [];
     for (var v in list) {
-        vStrs.add(_toPolyEvalStrWithType(v, t.valueType!));
+        vStrs.add(toPolyEvalStrWithType(v, t.valueType!));
     }
     String vStr = vStrs.join(", ");
     return "[$vStr]";
 }
 
-String _genMlist(Object? value, _PolyEvalType t) {
+String genMlist(Object? value, PolyEvalType t) {
     assert(value is List);
     List list = value as List;
     List<String> vStrs = [];
     for (var v in list) {
-        vStrs.add(_toPolyEvalStrWithType(v, t.valueType!));
+        vStrs.add(toPolyEvalStrWithType(v, t.valueType!));
     }
     String vStr = vStrs.join(", ");
     return "[$vStr]";
 }
 
-String _genUnorderedlist(Object? value, _PolyEvalType t) {
+String genUnorderedlist(Object? value, PolyEvalType t) {
     assert(value is List);
     List list = value as List;
     List<String> vStrs = [];
     for (var v in list) {
-        vStrs.add(_toPolyEvalStrWithType(v, t.valueType!));
+        vStrs.add(toPolyEvalStrWithType(v, t.valueType!));
     }
     vStrs.sort();
     String vStr = vStrs.join(", ");
     return "[$vStr]";
 }
 
-String _genDict(Object? value, _PolyEvalType t) {
+String genDict(Object? value, PolyEvalType t) {
     assert(value is Map);
     Map map = value as Map;
     List<String> vStrs = [];
     map.forEach((key, value) {
-        String kStr = _toPolyEvalStrWithType(key, t.keyType!);
-        String vStr = _toPolyEvalStrWithType(value, t.valueType!);
+        String kStr = toPolyEvalStrWithType(key, t.keyType!);
+        String vStr = toPolyEvalStrWithType(value, t.valueType!);
         vStrs.add("$kStr=>$vStr");
     });
     vStrs.sort();
@@ -173,13 +173,13 @@ String _genDict(Object? value, _PolyEvalType t) {
     return "{$vStr}";
 }
 
-String _genMdict(Object? value, _PolyEvalType t) {
+String genMdict(Object? value, PolyEvalType t) {
     assert(value is Map);
     Map map = value as Map;
     List<String> vStrs = [];
     map.forEach((key, value) {
-        String kStr = _toPolyEvalStrWithType(key, t.keyType!);
-        String vStr = _toPolyEvalStrWithType(value, t.valueType!);
+        String kStr = toPolyEvalStrWithType(key, t.keyType!);
+        String vStr = toPolyEvalStrWithType(value, t.valueType!);
         vStrs.add("$kStr=>$vStr");
     });
     vStrs.sort();
@@ -187,51 +187,51 @@ String _genMdict(Object? value, _PolyEvalType t) {
     return "{$vStr}";
 }
 
-String _genOptional(Object? value, _PolyEvalType t) {
-    return value != null ? _toPolyEvalStr(value, t.valueType!) : "null";
+String genOptional(Object? value, PolyEvalType t) {
+    return value != null ? toPolyEvalStr(value, t.valueType!) : "null";
 }
 
-String _toPolyEvalStr(Object? value, _PolyEvalType t) {
+String toPolyEvalStr(Object? value, PolyEvalType t) {
     String typeName = t.typeName;
     if (typeName == "void") {
-        return _genVoid(value);
+        return genVoid(value);
     } else if (typeName == "int") {
-        return _genInt(value);
+        return genInt(value);
     } else if (typeName == "long") {
-        return _genLong(value);
+        return genLong(value);
     } else if (typeName == "double") {
-        return _genDouble(value);
+        return genDouble(value);
     } else if (typeName == "bool") {
-        return _genBool(value);
+        return genBool(value);
     } else if (typeName == "char") {
-        return _genChar(value);
+        return genChar(value);
     } else if (typeName == "string") {
-        return _genString(value);
+        return genString(value);
     } else if (typeName == "any") {
-        return _genAny(value);
+        return genAny(value);
     } else if (typeName == "list") {
-        return _genList(value, t);
+        return genList(value, t);
     } else if (typeName == "mlist") {
-        return _genMlist(value, t);
+        return genMlist(value, t);
     } else if (typeName == "unorderedlist") {
-        return _genUnorderedlist(value, t);
+        return genUnorderedlist(value, t);
     } else if (typeName == "dict") {
-        return _genDict(value, t);
+        return genDict(value, t);
     } else if (typeName == "mdict") {
-        return _genMdict(value, t);
+        return genMdict(value, t);
     } else if (typeName == "optional") {
-        return _genOptional(value, t);
+        return genOptional(value, t);
     }
     assert(false);
     return "";
 }
 
-String _toPolyEvalStrWithType(Object? value, _PolyEvalType t) {
-    return _toPolyEvalStr(value, t) + ":" + t.typeStr;
+String toPolyEvalStrWithType(Object? value, PolyEvalType t) {
+    return toPolyEvalStr(value, t) + ":" + t.typeStr;
 }
 
 String myStringify(Object? value, String typeStr) {
-    return _toPolyEvalStrWithType(value, new _PolyEvalType(typeStr));
+    return toPolyEvalStrWithType(value, new PolyEvalType(typeStr));
 }
 
 
