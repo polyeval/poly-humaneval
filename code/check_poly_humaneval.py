@@ -1,11 +1,13 @@
 from polyeval.parsing import parse
-from polyeval.eval import ProjectTemplate, EvalStatus, gen_codes, create_project
+from polyeval.eval import ProjectTemplate, EvalStatus, gen_codes, gen_codes_for_single_file, create_project
 
 from tqdm import tqdm
 import sys
 import os
-import shutil
+import argparse
 import json
+
+from typing import List
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -28,22 +30,19 @@ suffix = {
     "swift": "swift",
     "typescript": "ts"
 }
-print(f"Loading project templates...")
 
 cur_langs = langs
-idxs = list(range(164))
-if len(sys.argv) >= 2:
-    cur_langs = [sys.argv[1]]
-if len(sys.argv) == 3:
-    idxs = [int(sys.argv[2])]
-if len(sys.argv) == 4:
-    idxs = list(range(int(sys.argv[2]), int(sys.argv[3]) + 1))
-if len(sys.argv) > 4:
-    raise Exception("args error")
 
-templates = {}
-for lang in cur_langs:
-    templates[lang] = ProjectTemplate(os.path.join(ROOT, "./project-templates", lang))
+parser = argparse.ArgumentParser()
+parser.add_argument("--lang", type=str, default=None)
+parser.add_argument("--idx", type=int, nargs="+", default=None)
+
+args = parser.parse_args()
+if args.lang is not None:
+    if args.lang not in langs:
+        raise Exception(f"Language not supported: {args.lang}")
+    cur_langs = [args.lang]
+
 print(f"Loading problem description and solution...")
 with open(os.path.join(ROOT, "./data/poly_humaneval.ped"), "r") as f:
     desc_str = f.read()
@@ -51,30 +50,46 @@ with open(os.path.join(ROOT, "./data/poly_humaneval.ped"), "r") as f:
 with open(os.path.join(ROOT, "./data/poly_humaneval_sol.json"), "r") as f:
     solutions = json.load(f)
 
+idxs = list(range(0, len(problems)))
+if args.idx is not None:
+    idxs = args.idx
+    if len(idxs) == 1:
+        idxs = [idxs[0]]
+    elif len(idxs) == 2:
+        idxs = list(range(idxs[0], idxs[1] + 1))
+    else:
+        raise Exception("args error")
 
 
 
+print(f"Loading project templates...")
+templates = {}
+single_file_templates = {}
+for lang in cur_langs:
+    templates[lang] = ProjectTemplate(os.path.join(ROOT, "./project-templates/default", lang))
+    single_file_templates[lang] = ProjectTemplate(os.path.join(ROOT, "./project-templates/single-file", lang))
 
 
-def evaluate(proj):
-    ret_stat, msg = proj.evaluate(compile_timeout=60, run_timeout=10, keep_when_fail=True)
-    if ret_stat != EvalStatus.Pass:
-        return False
-    return True
+def evaluate(lang, problem, solution, template, single_file_template):
+    p_name = problem.name.replace("/", "_")
+    single_file_codes = gen_codes_for_single_file(lang=lang, problem=problem, target_code=solution)
+    single_file_proj = create_project(single_file_template, f"{lang}-{p_name}-sf", single_file_codes,
+                                      root=os.path.join(ROOT, ".polyeval/"), overwrite=True)
+    ret_stat, msg = single_file_proj.evaluate(compile_timeout=10, run_timeout=10)
+    if ret_stat == EvalStatus.Pass:
+        return True
+    codes = gen_codes(lang=lang, problem=problem, target_code=solution)
+    proj = create_project(template, f"{lang}-{p_name}", codes, root=os.path.join(ROOT, ".polyeval/"), overwrite=True)
+    ret_stat, msg = proj.evaluate(compile_timeout=10, run_timeout=10)
+    if ret_stat == EvalStatus.Pass:
+        return True
+    return False
 
 
 for lang in cur_langs:
-    projects = []
-    print(f"Generating {lang} projects...")
     for idx in tqdm(idxs):
         problem = list(problems.values())[idx]
         solution = solutions[lang][problem.name]
-        codes = gen_codes(lang=lang, problem=problem, target_code=solution)
-        proj_name = f"{lang}_{idx}"
-        proj = create_project(templates[lang], proj_name, codes, root=os.path.join(ROOT, ".polyeval/"), overwrite=True)
-        projects.append([proj_name, proj])
-    print(f"Evaluating {lang} projects...")
-    for proj in tqdm(projects):
-        ret_stat, msg = proj[1].evaluate(compile_timeout=60, run_timeout=10, keep_when_fail=True)
-        if ret_stat != EvalStatus.Pass:
-            print(f"{proj[0]} failed")
+        ret = evaluate(lang, problem, solution, templates[lang], single_file_templates[lang])
+        if not ret:
+            print(f"{lang}-{problem.name} failed")

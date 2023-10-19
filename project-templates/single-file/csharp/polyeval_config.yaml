@@ -1,0 +1,7 @@
+sources:
+  main: src/Main.cs
+
+commands:
+  build: dotnet build
+  run: dotnet run
+
