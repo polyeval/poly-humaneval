@@ -3,6 +3,6 @@ sources:
   target: src/target.rb
 
 commands:
-  install: bundle.bat install
+  install: bundle install
   build: ruby -c src/main.rb src/target.rb
-  run: bundle.bat exec ruby src/main.rb
+  run: bundle exec ruby src/main.rb

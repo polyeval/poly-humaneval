@@ -80,7 +80,7 @@ def evaluate(lang, problem, solution, template, single_file_template):
         return True
     codes = gen_codes(lang=lang, problem=problem, target_code=solution)
     proj = create_project(template, f"{lang}-{p_name}", codes, root=os.path.join(ROOT, ".polyeval/"), overwrite=True)
-    ret_stat, msg = proj.evaluate(compile_timeout=10, run_timeout=10)
+    ret_stat, msg = proj.evaluate(compile_timeout=60, run_timeout=10, keep_when_fail=True)
     if ret_stat == EvalStatus.Pass:
         return True
     return False
