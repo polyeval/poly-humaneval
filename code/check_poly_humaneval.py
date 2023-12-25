@@ -34,6 +34,8 @@ suffix = {
 cur_langs = langs
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--input", type=str, default=None)
+parser.add_argument("--output", type=str, default=None)
 parser.add_argument("--lang", type=str, default=None)
 parser.add_argument("--idx", type=int, nargs="+", default=None)
 
@@ -47,7 +49,8 @@ print(f"Loading problem description and solution...")
 with open(os.path.join(ROOT, "./data/poly_humaneval.ped"), "r") as f:
     desc_str = f.read()
     problems = parse(desc_str)
-with open(os.path.join(ROOT, "./data/poly_humaneval_sol.json"), "r") as f:
+
+with open(args.input, "r") as f:
     solutions = json.load(f)
 
 idxs = list(range(0, len(problems)))
@@ -66,7 +69,9 @@ print(f"Loading project templates...")
 templates = {}
 single_file_templates = {}
 for lang in cur_langs:
+    print(f"Loading {lang}...")
     templates[lang] = ProjectTemplate(os.path.join(ROOT, "./project-templates/default", lang))
+    print(f"Loading {lang} single file ...")
     single_file_templates[lang] = ProjectTemplate(os.path.join(ROOT, "./project-templates/single-file", lang))
 
 
@@ -77,19 +82,26 @@ def evaluate(lang, problem, solution, template, single_file_template):
                                       root=os.path.join(ROOT, ".polyeval/"), overwrite=True)
     ret_stat, msg = single_file_proj.evaluate(compile_timeout=10, run_timeout=10)
     if ret_stat == EvalStatus.Pass:
-        return True
+        return True, ret_stat.name
     codes = gen_codes(lang=lang, problem=problem, target_code=solution)
     proj = create_project(template, f"{lang}-{p_name}", codes, root=os.path.join(ROOT, ".polyeval/"), overwrite=True)
-    ret_stat, msg = proj.evaluate(compile_timeout=60, run_timeout=10, keep_when_fail=True)
+    ret_stat, msg = proj.evaluate(compile_timeout=10, run_timeout=10)
     if ret_stat == EvalStatus.Pass:
-        return True
-    return False
+        return True, ret_stat.name
+    return False, ret_stat.name
 
+res = {}
 
 for lang in cur_langs:
+    res[lang] = {}
     for idx in tqdm(idxs):
         problem = list(problems.values())[idx]
         solution = solutions[lang][problem.name]
-        ret = evaluate(lang, problem, solution, templates[lang], single_file_templates[lang])
+        ret, stat_name = evaluate(lang, problem, solution, templates[lang], single_file_templates[lang])
         if not ret:
             print(f"{lang}-{problem.name} failed")
+        res[lang][problem.name] = stat_name
+
+
+with open(args.output, "w") as f:
+    json.dump(res, f, indent=4)

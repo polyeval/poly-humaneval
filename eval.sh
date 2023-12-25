@@ -1,0 +1,1 @@
+python code/check_poly_humaneval.py --input ./input_data/my_solution.json --output ./output_data/my_result.json --lang python
